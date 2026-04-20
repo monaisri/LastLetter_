@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Last Letter — Solo</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="title">LAST LETTER</div>
+<div class="subtitle">ต่อคำ — ตัวสุดท้ายต้องเป็นตัวแรกของคำถัดไป</div>
+
+<!-- SETUP -->
+<div class="screen active" id="screen-setup">
+
+  <div class="setup-section">
+    <div class="field-label">ชื่อของคุณ</div>
+    <input class="name-input" id="input-name" type="text" placeholder="ใส่ชื่อ..." maxlength="16" value="Player" />
+  </div>
+
+  <div class="setup-section">
+    <div class="field-label">ระยะเวลา</div>
+    <div class="diff-row" id="total-opts">
+      <div class="diff-pill" onclick="selTotal(this,24)">
+        <div class="dp-time">24</div>
+        <div class="dp-label">วิ · สบาย</div>
+      </div>
+      <div class="diff-pill sel" onclick="selTotal(this,18)">
+        <div class="dp-time">18</div>
+        <div class="dp-label">วิ · กำลังดี</div>
+      </div>
+      <div class="diff-pill" onclick="selTotal(this,12)">
+        <div class="dp-time">12</div>
+        <div class="dp-label">วิ · ท้าทาย</div>
+      </div>
+    </div>
+  </div>
+  <div class="setup-note">เริ่มเกมพร้อมน้ำยา Freeze และ Slow อย่างละ 2 เพื่อช่วยเล่นได้สนุกขึ้น</div>
+
+  <button class="btn-start" onclick="startGame()">เริ่มเกม</button>
+</div>
+
+<!-- READY OVERLAY -->
+<div id="ready-overlay" onclick="beginGame()">
+  <div class="ready-text">เมื่อพร้อมแล้ว<br>กด Enter ได้เลย</div>
+  <div class="ready-blink">press enter to start</div>
+  <button class="ready-tap" onclick="event.stopPropagation(); beginGame()">แตะที่นี่</button>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="screen-game">
+  <div class="game-col">
+
+    <!-- score + ring timer -->
+    <div class="top-strip">
+      <div>
+        <div class="score-display" id="s-words">0</div>
+        <div class="score-label">คำ</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:0.66rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">สถิติ</div>
+        <div style="font-family:'Boogaloo',cursive;font-size:1.4rem;color:#444;" id="s-best">0</div>
+      </div>
+      <div class="timer-ring-wrap">
+        <svg viewBox="0 0 72 72">
+          <circle class="ring-bg" cx="36" cy="36" r="30"/>
+          <circle class="ring-fg" id="ring-fg" cx="36" cy="36" r="30"
+            stroke-dasharray="188.5" stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-number" id="timer-number">—</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- current word -->
+    <div class="word-area">
+      <div class="word-area-label">คำปัจจุบัน</div>
+      <div class="current-word-big" id="current-word">—</div>
+    </div>
+
+    <!-- hint -->
+    <div class="hint-line" id="hint-line">พิมพ์คำแรกได้เลย</div>
+
+    <div class="potion-row">
+      <button class="potion-btn" id="btn-freeze" onclick="usePotion('freeze')" disabled>
+        <span>Freeze</span>
+        <small>หยุดเวลา</small>
+        <strong id="freeze-count">1</strong>
+      </button>
+      <button class="potion-btn" id="btn-slow" onclick="usePotion('slow')" disabled>
+        <span>Slow</span>
+        <small>ชะลอเวลา</small>
+        <strong id="slow-count">1</strong>
+      </button>
+    </div>
+  
+    <!-- input -->
+    <div class="input-zone">
+      <input type="text" id="word-input" placeholder="พิมพ์คำ..." autocomplete="off" disabled />
+      <button class="btn-submit" id="btn-submit" onclick="submitWord()" disabled>ส่ง</button>
+      <button class="btn-back" onclick="goSetup()" title="กลับ">✕</button>
+    </div>
+
+    <div id="status-msg"></div>
+
+    <div class="divider"></div>
+
+    <!-- word history -->
+    <div class="history-wrap">
+      <div class="history-label">คำที่ผ่านมา</div>
+      <div id="history-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- GAME OVER -->
+<div id="overlay">
+  <div class="o-result-label">คะแนน</div>
+  <div class="o-score" id="o-score">0</div>
+  <div class="o-unit">คำ</div>
+  <div class="o-msg" id="o-msg"></div>
+  <div class="o-record" id="o-record"></div>
+  <div class="o-btns">
+    <button class="o-btn-main" onclick="restartGame()">เล่นอีกรอบ</button>
+    <button class="o-btn-sec" onclick="goSetup()">เปลี่ยนการตั้งค่า</button>
+  </div>
+</div>
+
+<script src="wordlist.js"></script>
+<script src="skills.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
