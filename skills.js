@@ -1,10 +1,6 @@
-function updatePotionUI() {
-  // อัปเดตตัวเลขสต็อกสกิลและสถานะ disabled ของปุ่ม
-  document.getElementById('freeze-count').textContent = potions.freeze;
-  document.getElementById('slow-count').textContent   = potions.slow;
-  document.getElementById('btn-freeze').disabled = !gameActive || potions.freeze === 0;
-  document.getElementById('btn-slow').disabled   = !gameActive || potions.slow   === 0;
-}
+// =============================================
+//  สกิล Freeze และ Slow
+// =============================================
 
 function usePotion(type) {
   if (!gameActive || potions[type] <= 0) return;
@@ -23,7 +19,6 @@ function usePotion(type) {
 }
 
 function applyFreeze() {
-  // หยุดเวลา 3 วินาที
   timerPaused = true;
   setStatus('❄️ Freeze! เวลาหยุด 3 วิ', 'ok');
   renderTimer();
@@ -37,14 +32,53 @@ function applyFreeze() {
 }
 
 function applySlow() {
-  // ทำให้เวลาเดินช้าลง 2 เท่า เป็นเวลา 6 วินาที
-  if (slowActive) return; // ถ้า Slow อยู่แล้ว → ไม่ทำซ้ำ
   slowActive    = true;
   slowTickCount = 0;
-  setStatus('Slow! เวลาช้าลง 6 วินาที', 'ok');
+  setStatus('🐢 Slow! เวลาช้าลง 6 วิ', 'ok');
   clearTimeout(effectTimeout);
   effectTimeout = setTimeout(() => {
     slowActive = false;
-    setStatus('Slow หมดแล้ว', '');
+    setStatus('');
+    updatePotionUI(); // ปลดล็อคปุ่มหลัง Slow หมด
   }, 6000);
+}
+
+
+// =============================================
+//  อัปเดต UI ปุ่มสกิล
+// =============================================
+
+
+function updatePotionUI() {
+  // อัปเดตตัวเลขสต็อก
+  document.getElementById('freeze-count').textContent = potions.freeze;
+  document.getElementById('slow-count').textContent   = potions.slow;
+
+  // Freeze button
+  const btnFreeze = document.getElementById('btn-freeze');
+  if (btnFreeze) {
+    if (!gameActive) {
+      btnFreeze.disabled = true;
+    } else if (timerPaused || slowActive) {
+      btnFreeze.disabled = true;
+    } else if (potions.freeze <= 0) {
+      btnFreeze.disabled = true;
+    } else {
+      btnFreeze.disabled = false;
+    }
+  }
+
+  // Slow button
+  const btnSlow = document.getElementById('btn-slow');
+  if (btnSlow) {
+    if (!gameActive) {
+      btnSlow.disabled = true;
+    } else if (timerPaused || slowActive) {
+      btnSlow.disabled = true;
+    } else if (potions.slow <= 0) {
+      btnSlow.disabled = true;
+    } else {
+      btnSlow.disabled = false;
+    }
+  }
 }
