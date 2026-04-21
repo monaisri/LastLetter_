@@ -7,25 +7,32 @@ function updatePotionUI() {
 }
 
 function usePotion(type) {
-  // เรียกเมื่อกดปุ่มสกิล หรือกดปุ่ม 1/2
   if (!gameActive || potions[type] <= 0) return;
-  if (type === 'freeze') applyFreeze();
-  if (type === 'slow')   applySlow();
+
+  // ห้ามใช้สกิลทับกัน
+  if (timerPaused || slowActive) {
+    setStatus('สกิลกำลังทำงานอยู่ รอก่อนนะ!', 'err');
+    return;
+  }
+
   potions[type]--;
   updatePotionUI();
+
+  if (type === 'freeze') applyFreeze();
+  if (type === 'slow')   applySlow();
 }
 
 function applyFreeze() {
   // หยุดเวลา 3 วินาที
-  if (timerPaused) return; // ถ้า Freeze อยู่แล้ว → ไม่ทำซ้ำ
   timerPaused = true;
-  setStatus('Freeze! เวลาหยุด 3 วินาที', 'ok');
+  setStatus('❄️ Freeze! เวลาหยุด 3 วิ', 'ok');
   renderTimer();
   clearTimeout(effectTimeout);
   effectTimeout = setTimeout(() => {
     timerPaused = false;
-    setStatus('Freeze หมดแล้ว', '');
+    setStatus('');
     renderTimer();
+    updatePotionUI(); // ปลดล็อคปุ่มหลัง Freeze หมด
   }, 3000);
 }
 
